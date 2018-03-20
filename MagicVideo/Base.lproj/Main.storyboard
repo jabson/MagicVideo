@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Camera View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="MagicVideo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lzx-yR-M1p" userLabel="RecordButton">
+                                <rect key="frame" x="159" y="602" width="57" height="57"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="57" id="kuw-I4-56v"/>
+                                    <constraint firstAttribute="height" constant="57" id="zmH-ts-9hL"/>
+                                </constraints>
+                                <state key="normal" image="record"/>
+                                <connections>
+                                    <action selector="record:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2o0-GQ-NCk"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="55A-Z1-P7q" userLabel="RotateCameraButton">
+                                <rect key="frame" x="323" y="28" width="44" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="NBV-gg-2eH"/>
+                                    <constraint firstAttribute="width" constant="44" id="vD0-0B-e5A"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="11" minY="10" maxX="11" maxY="10"/>
+                                <state key="normal" image="rotate_camera"/>
+                                <connections>
+                                    <action selector="switchCamera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UgT-gr-r31"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="55A-Z1-P7q" secondAttribute="trailing" constant="8" id="0pE-jI-CcZ"/>
+                            <constraint firstItem="55A-Z1-P7q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="XN8-cJ-ULr"/>
+                            <constraint firstItem="Lzx-yR-M1p" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="iUS-O8-UXp"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Lzx-yR-M1p" secondAttribute="bottom" constant="8" id="nex-iu-iex"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="cameraSwitchButton" destination="55A-Z1-P7q" id="G3b-Qt-1aC"/>
+                        <outlet property="recordButton" destination="Lzx-yR-M1p" id="oq4-YG-9EZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-111" y="90"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="record" width="114" height="114"/>
+        <image name="rotate_camera" width="45" height="40"/>
+    </resources>
+</document>
