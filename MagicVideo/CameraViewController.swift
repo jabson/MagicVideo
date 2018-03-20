@@ -15,6 +15,9 @@ class CameraViewController: UIViewController {
     //MARK: IBOutlets
     @IBOutlet weak var recordButton: UIButton?
     @IBOutlet weak var cameraSwitchButton: UIButton?
+    @IBOutlet weak var torchButton: UIButton?
+    @IBOutlet weak var zoomPoint: UIButton!
+    @IBOutlet weak var zoomBg: UIImageView!
     
     // MARK: Video Preview Objects
     private var videoPreviewView: GLKView?
@@ -32,11 +35,15 @@ class CameraViewController: UIViewController {
     private var captureSession: AVCaptureSession?
     private var videoWriter: VideoWriter?
     
-    //MARK: helper
+    //MARK: helper recording
     private var cvPixelBuffer: CVPixelBuffer?
     private var isCapturing = false
     private var isBackCameraActive = true
     private var orientation = UIInterfaceOrientation.portrait
+    private var deviceZoomFactor: CGFloat = 1.0
+    
+    //MARK: helper zoom
+    private var previousLocation = CGPoint.zero
     
     // MARK: Object Life Cycle
     override func viewDidLoad() {
@@ -149,6 +156,7 @@ class CameraViewController: UIViewController {
         if let videoPreviewView = videoPreviewView {
             videoPreviewView.enableSetNeedsDisplay = false
             videoPreviewView.frame = self.view.bounds
+            videoPreviewView.isUserInteractionEnabled = false
             
             self.view.addSubview(videoPreviewView)
             self.view.sendSubview(toBack: videoPreviewView)
@@ -193,11 +201,15 @@ class CameraViewController: UIViewController {
         if captureSession.inputs.contains(frontCameraDeviceInput) == true {
             captureSession.removeInput(frontCameraDeviceInput)
             captureSession.addInput(backCameraDeviceInput)
+            backCameraDeviceInput.device.videoZoomFactor = deviceZoomFactor
             isBackCameraActive = true
+            self.torchButton?.isHidden = false
         } else if captureSession.inputs.contains(backCameraDeviceInput) == true {
             captureSession.removeInput(backCameraDeviceInput)
             captureSession.addInput(frontCameraDeviceInput)
+            frontCameraDeviceInput.device.videoZoomFactor = deviceZoomFactor
             isBackCameraActive = false
+            self.torchButton?.isHidden = true
         }
         
         //Commit all the configuration changes at once
@@ -206,6 +218,26 @@ class CameraViewController: UIViewController {
         // fix mirrored preview
         videoPreviewView?.transform = (videoPreviewView?.transform.scaledBy(x: -1, y: 1))!
         cvPixelBuffer = nil
+    }
+    
+    @IBAction func torch(_ sender: Any) {
+        guard let backDevice = backCameraDeviceInput?.device else {
+            print("Can't find back device")
+            return;
+        }
+        
+        if backDevice.hasTorch == false || backDevice.isTorchAvailable == false {
+            print("Can't turn on/off tourch")
+            return;
+        }
+        
+        do {
+            try backDevice.lockForConfiguration()
+            backDevice.torchMode = backDevice.torchMode == .on ? .off : .on;
+            backDevice.unlockForConfiguration()
+        } catch {
+            print("Something went wrong")
+        }
     }
     
     @IBAction func record(_ sender: Any) {
@@ -220,6 +252,59 @@ class CameraViewController: UIViewController {
         
         if let recordButtonImage = recordButtonImage {
             self.recordButton?.setImage(recordButtonImage, for: .normal)
+        }
+    }
+    
+    
+    @IBAction func handlePanGestureRecognizer(_ panGestureRecognizer: UIPanGestureRecognizer) {
+        let locationInView = panGestureRecognizer.location(in: self.view)
+        
+        switch panGestureRecognizer.state {
+        case .began:
+            previousLocation = locationInView
+        case .changed:
+            let zoomPointMaxAltitude = zoomBg.center.y + zoomBg.frame.size.height / 2 - zoomPoint.frame.size.height/2 + zoomPoint.imageEdgeInsets.top
+            let zoomPointMinAltitude = zoomBg.center.y - zoomBg.frame.size.height / 2 + zoomPoint.frame.size.height/2 - zoomPoint.imageEdgeInsets.bottom
+            let locationOffsetY = locationInView.y - previousLocation.y
+            zoomPoint.center.y += locationOffsetY
+            previousLocation = locationInView
+            
+            zoomPoint.center.y = min(zoomPointMaxAltitude, zoomPoint.center.y)
+            zoomPoint.center.y = max(zoomPointMinAltitude, zoomPoint.center.y)
+            
+            let percent = 1 - (zoomPoint.center.y - zoomPointMinAltitude) / (zoomPointMaxAltitude - zoomPointMinAltitude)
+            changeDeviceZoom(percent: percent)
+        case .ended, .cancelled: break
+        default: break
+        }
+    }
+    
+    func changeDeviceZoom(percent: CGFloat) {
+        guard let backDevice = backCameraDeviceInput?.device else {
+            print("Can't find back device")
+            return;
+        }
+        
+        guard let frontDevice = frontCameraDeviceInput?.device else {
+            print("Can't find front device")
+            return;
+        }
+        
+        let device = isBackCameraActive ? backDevice : frontDevice
+        
+        let maxZoomFactor = min(frontDevice.activeFormat.videoMaxZoomFactor, backDevice.activeFormat.videoMaxZoomFactor)
+        let minZoomFactor: CGFloat = 1
+        deviceZoomFactor = maxZoomFactor * percent
+        
+        deviceZoomFactor = min(maxZoomFactor, deviceZoomFactor)
+        deviceZoomFactor = max(minZoomFactor, deviceZoomFactor)
+        
+        do {
+            try device.lockForConfiguration()
+            device.videoZoomFactor = deviceZoomFactor
+            device.unlockForConfiguration()
+        } catch {
+            print("Can't change zoom factor")
         }
     }
     
@@ -264,6 +349,8 @@ class CameraViewController: UIViewController {
         }
         
         self.cameraSwitchButton?.isHidden = true
+        self.torchButton?.isHidden = true
+        
         self.videoWriter = VideoWriter(fileUrl: videoURL, size: size)
         self.isCapturing = true
     }
@@ -282,6 +369,9 @@ class CameraViewController: UIViewController {
         self.isCapturing = false
         self.videoWriter?.markAsFinished()
         self.cameraSwitchButton?.isHidden = false
+        if isBackCameraActive {
+            self.torchButton?.isHidden = false
+        }
         
         videoWriter.finish {
             self.videoWriter = nil
@@ -419,7 +509,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
         let sourceExtent = sourceImage.extent
         
         // add filter to image
-        guard let filteredImage = sourceImage.comicEffect() else {
+        guard let filteredImage = sourceImage.invertColorEffect() else {
             print("Can't add filter ro image")
             return
         }

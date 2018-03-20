@@ -18,6 +18,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="35V-Om-OZT" userLabel="ZoomView">
+                                <rect key="frame" x="332" y="221" width="27" height="225"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="zoom-bg" translatesAutoresizingMaskIntoConstraints="NO" id="CZU-nU-84W">
+                                        <rect key="frame" x="8" y="0.0" width="10" height="225"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d9a-l0-6Ph" userLabel="ZoomPoint">
+                                        <rect key="frame" x="-9" y="192" width="44" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <inset key="imageEdgeInsets" minX="11" minY="11" maxX="11" maxY="11"/>
+                                        <state key="normal" image="zoom-point"/>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="225" id="3Rl-50-kvT"/>
+                                    <constraint firstAttribute="width" constant="27" id="C9P-yh-4eY"/>
+                                </constraints>
+                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lzx-yR-M1p" userLabel="RecordButton">
                                 <rect key="frame" x="159" y="602" width="57" height="57"/>
                                 <constraints>
@@ -30,39 +50,70 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="55A-Z1-P7q" userLabel="RotateCameraButton">
-                                <rect key="frame" x="323" y="28" width="44" height="40"/>
+                                <rect key="frame" x="323" y="28" width="44" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="NBV-gg-2eH"/>
+                                    <constraint firstAttribute="height" constant="44" id="NBV-gg-2eH"/>
                                     <constraint firstAttribute="width" constant="44" id="vD0-0B-e5A"/>
                                 </constraints>
-                                <inset key="imageEdgeInsets" minX="11" minY="10" maxX="11" maxY="10"/>
+                                <inset key="imageEdgeInsets" minX="11" minY="12" maxX="11" maxY="12"/>
                                 <state key="normal" image="rotate_camera"/>
                                 <connections>
                                     <action selector="switchCamera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UgT-gr-r31"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bez-0E-XyN">
+                                <rect key="frame" x="8" y="28" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="b4F-Fs-qdZ"/>
+                                    <constraint firstAttribute="height" constant="44" id="mbN-j4-uby"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="12" minY="12" maxX="12" maxY="12"/>
+                                <state key="normal" image="torch"/>
+                                <connections>
+                                    <action selector="torch:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DWB-97-gWm"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="55A-Z1-P7q" secondAttribute="trailing" constant="8" id="0pE-jI-CcZ"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="35V-Om-OZT" secondAttribute="trailing" constant="16" id="7MM-dV-cha"/>
+                            <constraint firstItem="bez-0E-XyN" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="AeL-pI-u8D"/>
                             <constraint firstItem="55A-Z1-P7q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="XN8-cJ-ULr"/>
+                            <constraint firstItem="35V-Om-OZT" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="buW-vL-tZY"/>
                             <constraint firstItem="Lzx-yR-M1p" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="iUS-O8-UXp"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Lzx-yR-M1p" secondAttribute="bottom" constant="8" id="nex-iu-iex"/>
+                            <constraint firstItem="bez-0E-XyN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="tEO-3n-xIf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="gOx-sB-ifP" appends="YES" id="bID-Lc-rg2"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="cameraSwitchButton" destination="55A-Z1-P7q" id="G3b-Qt-1aC"/>
                         <outlet property="recordButton" destination="Lzx-yR-M1p" id="oq4-YG-9EZ"/>
+                        <outlet property="torchButton" destination="bez-0E-XyN" id="SF1-CR-YrV"/>
+                        <outlet property="zoomBg" destination="CZU-nU-84W" id="cDs-iJ-Xt9"/>
+                        <outlet property="zoomPoint" destination="d9a-l0-6Ph" id="WfM-zC-PzX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="gOx-sB-ifP">
+                    <connections>
+                        <action selector="handlePanGestureRecognizer:" destination="BYZ-38-t0r" id="NZA-4o-e7M"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-111" y="90"/>
+            <point key="canvasLocation" x="-111.2" y="89.505247376311857"/>
         </scene>
     </scenes>
     <resources>
         <image name="record" width="114" height="114"/>
         <image name="rotate_camera" width="45" height="40"/>
+        <image name="torch" width="40" height="40"/>
+        <image name="zoom-bg" width="22" height="451"/>
+        <image name="zoom-point" width="33" height="33"/>
     </resources>
 </document>
