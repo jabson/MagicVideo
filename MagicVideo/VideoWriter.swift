@@ -14,6 +14,7 @@ class VideoWriter: NSObject {
     var videoInput: AVAssetWriterInput
     var audioInput: AVAssetWriterInput
     
+    
     private var isFirstVideoFrame = true
     
     init(fileUrl: URL, size: CGSize) {
